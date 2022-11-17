@@ -74,25 +74,27 @@ function App() {
               class="input input-bordered w-full max-w-xs"
             />
           </form>
-          {schoolTasks.length > 0 && (
-            <ul className="menu bg-base-100 ring-2 ring-primary/30 w-56 rounded-box">
-              {schoolTasks.map((task) => {
-                return (
-                  <li className="overflow-hidden">
-                    <span className="group overflow-hidden">
-                      <XMarkIcon
-                        onClick={() => handleRemove(task)}
-                        className="h-6 w-6 hover:bg-red-500 hover:text-white rounded-md p-1 group-hover:translate-x-0 -translate-x-10 transition"
-                      />
-                      <span className="-translate-x-8 group-hover:translate-x-0 transition">
-                        {task}
+          <>
+            {schoolTasks.length > 0 && (
+              <ul className="menu bg-base-100 ring-2 ring-primary/30 w-56 rounded-box">
+                {schoolTasks.map((task) => {
+                  return (
+                    <li className="overflow-hidden">
+                      <span className="group overflow-hidden">
+                        <XMarkIcon
+                          onClick={() => handleRemove(task)}
+                          className="h-6 w-6 hover:bg-red-500 hover:text-white rounded-md p-1 group-hover:translate-x-0 -translate-x-10 transition"
+                        />
+                        <span className="-translate-x-8 group-hover:translate-x-0 transition">
+                          {task}
+                        </span>
                       </span>
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </>
         </div>
       </main>
       <div className="absolute bottom-4 right-4 flex gap-2 items-center flex-col">
