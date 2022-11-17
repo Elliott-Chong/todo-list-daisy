@@ -3,6 +3,7 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 
 function App() {
   const schoolRef = React.useRef();
+  const [theme, setTheme] = React.useState("luxury");
   const [schoolTasks, setSchoolTasks] = React.useState([]);
   const handleRemove = (t) => {
     setSchoolTasks(schoolTasks.filter((task) => task !== t));
@@ -40,8 +41,9 @@ function App() {
       "coffee",
       "winter",
     ];
-    document.querySelector("html").dataset.theme =
-      themes[Math.floor(Math.random() * themes.length)];
+    let theme = themes[Math.floor(Math.random() * themes.length)];
+    document.querySelector("html").dataset.theme = theme;
+    setTheme(theme);
   };
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -56,7 +58,10 @@ function App() {
   }, [schoolTasks]);
 
   React.useEffect(() => {
-    setSchoolTasks(JSON.parse(localStorage.getItem("school tasks")));
+    let school_tasks = localStorage.getItem("school tasks");
+    if (school_tasks) {
+      setSchoolTasks(JSON.parse(school_tasks));
+    }
   }, []);
 
   return (
@@ -71,35 +76,33 @@ function App() {
               ref={schoolRef}
               type="text"
               placeholder="Type here"
-              class="input input-bordered w-full max-w-xs"
+              className="input input-bordered w-full max-w-xs"
             />
           </form>
-          <>
-            {schoolTasks.length > 0 && (
-              <ul className="menu bg-base-100 ring-2 ring-primary/30 w-56 rounded-box">
-                {schoolTasks.map((task) => {
-                  return (
-                    <li className="overflow-hidden">
-                      <span className="group overflow-hidden">
-                        <XMarkIcon
-                          onClick={() => handleRemove(task)}
-                          className="h-6 w-6 hover:bg-red-500 hover:text-white rounded-md p-1 group-hover:translate-x-0 -translate-x-10 transition"
-                        />
-                        <span className="-translate-x-8 group-hover:translate-x-0 transition">
-                          {task}
-                        </span>
+          {schoolTasks.length > 0 && (
+            <ul className="menu bg-base-100 ring-2 ring-primary/30 w-56 rounded-box">
+              {schoolTasks.map((task) => {
+                return (
+                  <li className="overflow-hidden">
+                    <span className="group overflow-hidden">
+                      <XMarkIcon
+                        onClick={() => handleRemove(task)}
+                        className="h-6 w-6 hover:bg-red-500 hover:text-white rounded-md p-1 group-hover:translate-x-0 -translate-x-10 transition"
+                      />
+                      <span className="-translate-x-8 group-hover:translate-x-0 transition">
+                        {task}
                       </span>
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
-          </>
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </div>
       </main>
       <div className="absolute bottom-4 right-4 flex gap-2 items-center flex-col">
         <button className="btn" onClick={changeTheme}>
-          Random theme
+          Theme: {theme}
         </button>
         <p>
           <a
