@@ -8,6 +8,41 @@ function App() {
     setSchoolTasks(schoolTasks.filter((task) => task !== t));
   };
 
+  const changeTheme = () => {
+    const themes = [
+      "light",
+      "dark",
+      "cupcake",
+      "bumblebee",
+      "emerald",
+      "corporate",
+      "synthwave",
+      "retro",
+      "cyberpunk",
+      "valentine",
+      "halloween",
+      "garden",
+      "forest",
+      "aqua",
+      "lofi",
+      "pastel",
+      "fantasy",
+      "wireframe",
+      "black",
+      "luxury",
+      "dracula",
+      "cmyk",
+      "autumn",
+      "business",
+      "acid",
+      "lemonade",
+      "night",
+      "coffee",
+      "winter",
+    ];
+    document.querySelector("html").dataset.theme =
+      themes[Math.floor(Math.random() * themes.length)];
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
     if (schoolRef.current.value === "") return;
@@ -60,15 +95,19 @@ function App() {
           )}
         </div>
       </main>
-      <p className="absolute bottom-4 right-4">
-        Source code:{" "}
-        <a
-          className="underline"
-          href="https://github.com/elliott-chong/todo-list-daisy"
-        >
-          Elliott Chong
-        </a>
-      </p>
+      <div className="absolute bottom-4 right-4 flex gap-2 items-center flex-col">
+        <button className="btn" onClick={changeTheme}>
+          Random theme
+        </button>
+        <p>
+          <a
+            className="underline"
+            href="https://github.com/elliott-chong/todo-list-daisy"
+          >
+            Elliott Chong
+          </a>
+        </p>
+      </div>
     </>
   );
 }
