@@ -3,7 +3,7 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 
 function App() {
   const schoolRef = React.useRef();
-  const [theme, setTheme] = React.useState("luxury");
+  const [theme, setTheme] = React.useState("");
   const [schoolTasks, setSchoolTasks] = React.useState([]);
   const handleRemove = (t) => {
     setSchoolTasks(schoolTasks.filter((task) => task !== t));
@@ -42,9 +42,16 @@ function App() {
       "winter",
     ];
     let theme = themes[Math.floor(Math.random() * themes.length)];
-    document.querySelector("html").dataset.theme = theme;
     setTheme(theme);
   };
+  React.useEffect(() => {
+    console.log(theme);
+    document.querySelector("html").dataset.theme = theme;
+    if (theme !== "") {
+      localStorage.setItem("theme", theme);
+    }
+  }, [theme]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (schoolRef.current.value === "") return;
@@ -59,8 +66,12 @@ function App() {
 
   React.useEffect(() => {
     let school_tasks = localStorage.getItem("school tasks");
+    let theme = localStorage.getItem("theme");
     if (school_tasks) {
       setSchoolTasks(JSON.parse(school_tasks));
+    }
+    if (theme) {
+      setTheme(theme);
     }
   }, []);
 
