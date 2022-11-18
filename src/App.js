@@ -61,6 +61,7 @@ function App() {
     let theme = themes[Math.floor(Math.random() * themes.length)];
     setTheme(theme);
   };
+
   React.useEffect(() => {
     document.querySelector("html").dataset.theme = theme;
     if (theme !== "") {
