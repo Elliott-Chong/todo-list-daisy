@@ -1,6 +1,6 @@
 import React from "react";
 import produce from "immer";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon, PencilIcon } from "@heroicons/react/24/outline";
 
 function uuid() {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
@@ -14,6 +14,9 @@ function App() {
   const schoolRef = React.useRef();
   const [theme, setTheme] = React.useState("");
   const [tasks, setTasks] = React.useState({ primary: [] });
+  const [isEditing, setIsEditing] = React.useState(false);
+  const [editInfo, setEditInfo] = React.useState({ id: null, category: null });
+
   const handleRemove = (id, category) => {
     setTasks(
       produce(tasks, (draft) => {
@@ -68,6 +71,22 @@ function App() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (schoolRef.current.value === "") return;
+    if (isEditing) {
+      setTasks(
+        produce(tasks, (draft) => {
+          for (let task of draft[editInfo.category]) {
+            if (task.id === editInfo.id) {
+              task.task = schoolRef.current.value;
+              break;
+            }
+          }
+          return draft;
+        })
+      );
+      setIsEditing(false);
+      setEditInfo({ id: null, category: null });
+      return;
+    }
     let task = schoolRef.current.value;
     let category = task.split(" ")[0];
     if (category.includes("#")) {
@@ -89,10 +108,9 @@ function App() {
   };
   React.useEffect(() => {
     window.tasks = tasks;
-    if (Object.entries(tasks).length != 1)
+    if (Object.entries(tasks).length !== 1)
       localStorage.setItem("tasks", JSON.stringify(tasks));
     schoolRef.current.value = "";
-    console.log(tasks);
   }, [tasks]);
 
   React.useEffect(() => {
@@ -123,7 +141,10 @@ function App() {
               return (
                 tasks.length > 0 && (
                   <>
-                    <div className="flex items-center gap-4 flex-col">
+                    <div
+                      key={category}
+                      className="flex items-center gap-4 flex-col"
+                    >
                       <h1>{category}</h1>
                       <ul
                         key={category}
@@ -137,14 +158,31 @@ function App() {
                             >
                               <div className="flex group">
                                 <span className="overflow-hidden">
-                                  <XMarkIcon
-                                    onClick={() =>
-                                      handleRemove(task.id, category)
-                                    }
-                                    className="h-6 w-6 hover:bg-red-500 hover:text-white rounded-md p-1 group-hover:translate-x-0 -translate-x-10 transition"
-                                  />
+                                  <div className="flex gap-1">
+                                    <XMarkIcon
+                                      onClick={() =>
+                                        handleRemove(task.id, category)
+                                      }
+                                      className="h-6 w-6 hover:bg-red-500 hover:text-white rounded-md p-1 group-hover:translate-x-0 -translate-x-10 transition"
+                                    />
+                                    <PencilIcon
+                                      onClick={() => {
+                                        schoolRef.current.focus();
+                                        setEditInfo(
+                                          produce(editInfo, (draft) => {
+                                            draft.id = task.id;
+                                            draft.category = category;
+                                            return draft;
+                                          })
+                                        );
+                                        setIsEditing(true);
+                                        schoolRef.current.value = task.task;
+                                      }}
+                                      className="h-6 w-6 hover:bg-orange-400 hover:text-white rounded-md p-1 group-hover:translate-x-0 -translate-x-14 transition"
+                                    />
+                                  </div>
                                 </span>
-                                <span className="-translate-x-7 group-hover:translate-x-0 transition">
+                                <span className="-translate-x-16 group-hover:translate-x-0 transition">
                                   {task.task}
                                 </span>
                               </div>
@@ -166,6 +204,8 @@ function App() {
         </button>
         <p>
           <a
+            target="_blank"
+            rel="noreferrer"
             className="underline"
             href="https://github.com/elliott-chong/todo-list-daisy"
           >
